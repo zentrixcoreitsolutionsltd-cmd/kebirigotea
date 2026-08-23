@@ -1,0 +1,33 @@
+/* Tegat Tea Factory - Theme Stylesheet */
+:root {
+  --lux-green: #0b2b0e;
+  --lux-gold: #c99c22;
+  --lux-cream: #f9f7f2;
+  --ink: #111213;
+  --white: #ffffff;
+  --muted: #6c7a70;
+  --yellow: #f7dc6f;
+  --brown: #123118;
+  --brown-deep: #0a2010;
+  --card: #ffffff;
+  --bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg: #0e1710;
+  --card: #152218;
+  --ink: #f3f5f3;
+  --muted: #95a59a;
+  --lux-cream: #141f16;
+}
+
+/* Accessibility Focus States */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}

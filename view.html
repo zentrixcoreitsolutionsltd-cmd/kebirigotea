@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Shopping Cart — Kebirigo Tea Factory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/cookies.css">
+<link rel="stylesheet" href="assets/theme.css">
+<link rel="stylesheet" href="assets/accessibility.css">
+<script src="assets/theme.js"></script>
+<script src="assets/accessibility.js" defer></script>
+<script type="module" src="assets/cookies.js"></script>
+<script type="module" src="assets/firebase-db.js"></script>
+<style>
+:root {
+  --brown: #123118;
+  --brown-deep: #0a2010;
+  --yellow: #f2c94c;
+  --yellow-soft: #f7dc6f;
+  --cream: #faf6ec;
+  --ink: #2b2418;
+  --danger: #e74c3c;
+  --success: #2ecc71;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--cream);
+  font-family: 'Inter', Arial, sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  background: linear-gradient(120deg, var(--brown-deep), var(--brown));
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--yellow-soft);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-area img {
+  height: 40px;
+  background: white;
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.nav-links a {
+  color: var(--yellow-soft);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+  margin-left: 8px;
+  transition: 0.2s;
+}
+
+.nav-links a:hover {
+  background: var(--yellow);
+  color: var(--brown);
+}
+
+.container {
+  max-width: 960px;
+  width: 92%;
+  margin: 36px auto;
+  flex: 1;
+}
+
+.cart-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  border-left: 6px solid var(--brown);
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  color: var(--brown);
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.cart-table th {
+  text-align: left;
+  padding: 12px;
+  background: var(--cream);
+  color: var(--brown);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.cart-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.qty-btn {
+  background: #eee;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.remove-btn {
+  background: #fee2e2;
+  color: var(--danger);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 2px solid #eee;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.total-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--brown);
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-secondary {
+  background: #eee;
+  color: var(--brown);
+}
+
+.btn-primary {
+  background: var(--brown);
+  color: var(--yellow);
+}
+
+.btn-primary:hover {
+  background: var(--yellow);
+  color: var(--brown);
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 48px 0;
+  color: #666;
+}
+
+.footer {
+  background: linear-gradient(120deg, var(--brown-deep), var(--brown));
+  color: var(--yellow-soft);
+  padding: 24px;
+  text-align: center;
+  margin-top: 40px;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="index.html" class="logo-area">
+    <img src="assets/kebirigo_logo.png" alt="Kebirigo Tea logo">
+    <span>Kebirigo Tea Factory</span>
+  </a>
+
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index-1.html">Shop</a>
+    <a href="product.html">Quality Specs</a>
+    <a href="pay$submit.html" style="background:var(--yellow);color:var(--brown);">Checkout</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="cart-card">
+    <h1>Your Shopping Cart</h1>
+    <div id="cartContent">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cartTableBody"></tbody>
+      </table>
+
+      <div class="cart-summary">
+        <div class="total-price">
+          Total: <span id="cartTotalText">Ksh. 0</span>
+        </div>
+        <div class="btn-group">
+          <a href="index-1.html" class="btn btn-secondary">Continue Shopping</a>
+          <a href="pay$submit.html" class="btn btn-primary">Proceed to Checkout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  © 2026 Kebirigo Tea Factory. All Rights Reserved.
+</div>
+
+<script>
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem('cart')) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveCart(cart) {
+  try {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  } catch (e) {}
+  renderCart();
+}
+
+function updateQty(index, delta) {
+  const cart = getCart();
+  if (!cart[index]) return;
+  cart[index].qty = Math.max(1, (parseInt(cart[index].qty) || 1) + delta);
+  saveCart(cart);
+}
+
+function removeItem(index) {
+  const cart = getCart();
+  cart.splice(index, 1);
+  saveCart(cart);
+}
+
+function renderCart() {
+  const cart = getCart();
+  const tbody = document.getElementById('cartTableBody');
+  const totalText = document.getElementById('cartTotalText');
+  const cartContent = document.getElementById('cartContent');
+
+  if (!tbody || !cartContent) return;
+
+  if (cart.length === 0) {
+    cartContent.innerHTML = `
+      <div class="empty-cart">
+        <p style="font-size:18px;margin-bottom:16px;">Your cart is currently empty.</p>
+        <a href="index-1.html" class="btn btn-primary">Browse Tea Products</a>
+      </div>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    const itemTotal = (item.price || 0) * (item.qty || 1);
+    total += itemTotal;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${item.name || 'Tea Item'}</strong></td>
+      <td>Ksh. ${item.price || 0}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+          <span>${item.qty || 1}</span>
+          <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+        </div>
+      </td>
+      <td><strong>Ksh. ${itemTotal}</strong></td>
+      <td>
+        <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  if (totalText) {
+    totalText.innerText = 'Ksh. ' + total;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderCart);
+</script>
+
+</body>
+</html>

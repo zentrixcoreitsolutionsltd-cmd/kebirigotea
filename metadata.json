@@ -1,0 +1,6 @@
+{
+  "name": "Kebirigo Tea Factory",
+  "description": "Kebirigo Tea Factory official portal, luxury export, retail shop, CTC quality specifications, farmer portal, and checkout platform in Nyamira, Kenya.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
