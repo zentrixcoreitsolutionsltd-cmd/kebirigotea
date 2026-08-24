@@ -633,7 +633,7 @@ h2 {
 
 <h2>Our Tea Products</h2>
 
-<div class="product-grid">
+<div class="product-grid" id="productGrid">
   <div class="product-card">
     <img src="./images/products/25g.png" alt="Kebirigo Black Tea 25g pack">
     <h3>Black Tea – Net<br> Weight:25g</h3>
@@ -725,6 +725,41 @@ h2 {
 </div>
 
 </div>
+
+<script>
+// Dynamic sync with admin retail catalog
+(function renderAdminRetailProducts() {
+  try {
+    const raw = localStorage.getItem('kebirigo_retail_products');
+    if (!raw) return;
+    const prods = JSON.parse(raw);
+    if (!Array.isArray(prods) || prods.length === 0) return;
+
+    const grid = document.getElementById('productGrid');
+    if (!grid) return;
+
+    grid.innerHTML = prods.map((p, i) => {
+      const qtyId = 'qty_prod_' + (p.id || i);
+      const safeName = (p.name || 'Kebirigo Tea').replace(/'/g, "\\'");
+      return `
+        <div class="product-card">
+          <img src="${p.image || './images/products/100g.png'}" alt="${p.name}" onerror="this.src='./images/products/100g.png'">
+          <h3>${p.name}</h3>
+          <p><b>Price:</b> Ksh. ${p.price}</p>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty('${qtyId}', -1)">-</button>
+            <input type="number" id="${qtyId}" min="1" value="1" style="width:40px; text-align:center">
+            <button class="qty-btn" onclick="changeQty('${qtyId}', 1)">+</button>
+          </div>
+          <button class="add-btn" onclick="addProduct('${safeName}', ${p.price}, '${qtyId}')">Add to Cart</button>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    console.warn('Dynamic product render fallback:', e);
+  }
+})();
+</script>
 
 <footer class="footer">
   <div class="footer-container">

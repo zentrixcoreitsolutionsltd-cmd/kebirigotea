@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import path from 'path';
 
 export default defineConfig({
+  esbuild: {
+    jsx: 'automatic',
+  },
   base: './',
   server: {
     port: 3000,
@@ -18,6 +21,7 @@ export default defineConfig({
         pay: path.resolve(__dirname, 'pay$submit.html'),
         product: path.resolve(__dirname, 'product.html'),
         view: path.resolve(__dirname, 'view.html'),
+        admin: path.resolve(__dirname, 'admin.html'),
       },
     },
   },
