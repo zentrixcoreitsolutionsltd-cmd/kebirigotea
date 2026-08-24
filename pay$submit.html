@@ -1330,8 +1330,8 @@ setInterval(syncCartBadge, 500);
 
 
 // --- CONFIGURATION ---
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOrBeq1nEoWz-oeoSwV9SVbJ58_PCOafpYDGibxL5g3VR2POXMLAGj4Afvb4-aqQMp/exec"; 
-const SECRET_TOKEN = "TEGAT-TEA-2025-PRIVATE"; 
+const GOOGLE_SCRIPT_URL = localStorage.getItem('kebirigo_gas_script_url') || "https://script.google.com/macros/s/AKfycbxOrBeq1nEoWz-oeoSwV9SVbJ58_PCOafpYDGibxL5g3VR2POXMLAGj4Afvb4-aqQMp/exec"; 
+const SECRET_TOKEN = localStorage.getItem('kebirigo_gas_secret_token') || "KEBIRIGO-TEA-2025-PRIVATE"; 
 const KSH_TO_USD = 130.00;
 
 let currentRegion = 'local';
@@ -1697,47 +1697,38 @@ if (el('submitOrder')) {
             };
         });
 
+        const itemsFormatted = cart.map(i => {
+            const qty = Number(i.quantity || i.qty || 1);
+            const price = Number(i.price || 0);
+            const lineTotal = price * qty;
+            return `${i.name || i.product || "Tea Packet"} | ${qty} | ${lineTotal}`;
+        }).join('\n');
+
         const totalVal = parseFloat(el('summaryTotal').innerText.replace(/[^0-9.]/g, '')) || 0;
         const totalSum = totalVal ? totalVal.toLocaleString() : el('summaryTotal').innerText;
         const orderId = el('displayOrderID').innerText || ('TR-' + Date.now());
-        const ADMIN_EMAIL = localStorage.getItem('kebirigo_admin_email') || "admin@kebirigotea.co.ke";
+        const ADMIN_EMAIL = localStorage.getItem('kebirigo_admin_email') || "cherojoen@gmail.com";
         const recipientEmail = el('email').value;
         const templateId = Number(localStorage.getItem('kebirigo_email_template_id')) || 1;
-        const txnId = `${selectedPaymentMethod.toUpperCase()}: ${refCode}`;
-        const transportMethod = currentRegion === 'local' ? el('transportMeans').value : 'International Air Freight';
+        const txnId = refCode;
+        const transportMethod = currentRegion === 'local' ? (el('transportMeans') ? el('transportMeans').value : 'Standard Delivery') : 'International Air Freight';
         const gpsLocation = currentRegion === 'local' ? (el('location').value || el('county').value) : (el('address').value + ', ' + el('country').value);
-
-        const data = {
-            orderID: orderId,
-            transport: transportMethod,
-            gps: gpsLocation
-        };
 
         const payload = {
             token: SECRET_TOKEN,
-            sender: { "name": "Kebirigo Tea Factory", "email": ADMIN_EMAIL },
-            to: [{ "email": recipientEmail }],
-            templateId: templateId,
-            params: {
-              "titleText": "NEW ORDER ALERT",
-              "welcomeMessage": "A new order has been received from the Kebirigo Tea online store.",
-              "orderID": data.orderID || "N/A",
-              "paymentRef": txnId,
-              "transportMethod": data.transport || "Standard Delivery",
-              "gps": data.gps || "",
-              "items": templateItems,   // real array, never stringified
-              "totalSum": totalSum
-            },
-            // Backward-compatibility properties for sheet/GAS logger
             orderID: orderId,
             name: el('fullName').value,
             email: recipientEmail,
             phone: el('phoneNumber').value,
-            total: totalSum,
+            total: totalVal,
+            paymentRef: txnId,
+            transaction_id: txnId,
+            mpesa_code: txnId,
             ref: txnId,
-            gps: gpsLocation,
-            transport: transportMethod,
-            items: templateItems
+            gps: gpsLocation || "Kericho / Nyamira",
+            transport: transportMethod || "Standard Delivery",
+            items: itemsFormatted || "Kebirigo Tea Selection | 1 | " + totalVal,
+            region: currentRegion
         };
 
         try {
