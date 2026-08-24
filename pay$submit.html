@@ -1707,7 +1707,7 @@ if (el('submitOrder')) {
         const totalVal = parseFloat(el('summaryTotal').innerText.replace(/[^0-9.]/g, '')) || 0;
         const totalSum = totalVal ? totalVal.toLocaleString() : el('summaryTotal').innerText;
         const orderId = el('displayOrderID').innerText || ('TR-' + Date.now());
-        const ADMIN_EMAIL = localStorage.getItem('kebirigo_admin_email') || "cherojoen@gmail.com";
+        const ADMIN_EMAIL = localStorage.getItem('kebirigo_admin_email') || "zentrixcoreitsolutionsltd@gmail.com";
         const recipientEmail = el('email').value;
         const templateId = Number(localStorage.getItem('kebirigo_email_template_id')) || 1;
         const txnId = refCode;

@@ -1578,8 +1578,22 @@ function doPost(e) {
     data.paymentRef = txnId;
     data.transport = transport; // Ensure it's passed to email functions
     
-    sendAdminAlert(data);
-    if (data.email && data.email.includes("@")) sendCustomerConfirmation(data);
+    // 1. Send Admin Sales Alert
+    try {
+      sendAdminAlert(data);
+    } catch (errAdmin) {
+      console.error("Admin Email Error: " + errAdmin.message);
+    }
+
+    // 2. Send Customer Order Confirmation & VAT Receipt
+    try {
+      if (data.email && data.email.includes("@")) {
+        sendCustomerConfirmation(data);
+      }
+    } catch (errCust) {
+      console.error("Customer Email Error: " + errCust.message);
+    }
+
     createDashboard();
     
     return ContentService.createTextOutput("success");
@@ -1892,7 +1906,7 @@ function testSystemFlowSuccess() {
     token: SECRET_TOKEN, 
     orderID: "TR-TEST-" + Math.floor(Math.random()*9999), 
     name: "Executive Tester", 
-    email: "cherojoen@outlook.com", 
+    email: ADMIN_EMAIL, 
     phone: "0722000111", 
     total: 12500, 
     transport: "G4S Courier (Door-to-Door)",
@@ -1906,7 +1920,7 @@ function testSystemFlowSuccess() {
     const e = { postData: { contents: JSON.stringify(mock) } };
     const response = doPost(e);
     if (response.getContent() === "success") {
-      SpreadsheetApp.getUi().alert("✅ TEST SENT!\\n\\n1. Check " + ADMIN_EMAIL + "\\n2. Check your Spam/Junk folder\\n3. Check the 'Orders' sheet for the new row.");
+      SpreadsheetApp.getUi().alert("✅ TEST SENT!\\n\\n1. Check " + ADMIN_EMAIL + " (both Admin Alert & Customer Invoice sent)\\n2. Check your Spam/Junk folder\\n3. Check the 'Orders' sheet for the new row.");
     } else {
       SpreadsheetApp.getUi().alert("⚠️ Script responded: " + response.getContent());
     }
@@ -2085,7 +2099,7 @@ function reportYearly() { generateExecutiveReport(365, "Yearly Review"); }
         token: token,
         orderID: "TR-TEST-" + Math.floor(Math.random() * 9999),
         name: "Executive Tester",
-        email: "cherojoen@outlook.com",
+        email: email,
         phone: "0722000111",
         total: 12500,
         transport: "G4S Courier (Door-to-Door)",
@@ -2104,7 +2118,7 @@ function reportYearly() { generateExecutiveReport(365, "Yearly Review"); }
           body: JSON.stringify(mock)
         });
 
-        alert(`✅ TEST SIMULATION DISPATCHED!\n\nPayload sent to Google Apps Script:\n- Order ID: ${mock.orderID}\n- Amount: Ksh 12,500\n- Recipient Alert: ${email}\n\nCheck your Google Sheet 'Orders' tab and email inbox!`);
+        alert(`✅ TEST SIMULATION DISPATCHED!\n\nPayload sent to Google Apps Script:\n- Order ID: ${mock.orderID}\n- Amount: Ksh 12,500\n- Admin Alert & Customer Invoice sent to: ${email}\n\nCheck your Google Sheet 'Orders' tab and email inbox!`);
       } catch (err) {
         alert(`❌ Dispatch error: ${err.message}`);
       }
