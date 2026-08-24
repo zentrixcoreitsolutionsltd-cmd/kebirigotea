@@ -1502,7 +1502,7 @@
     // ==========================================
     const DEFAULT_GAS_CODE = `/* -------------------- CONFIGURATION -------------------- */
 const SECRET_TOKEN = "KEBIRIGO-TEA-2025-PRIVATE";
-const ADMIN_EMAIL = "cherojoen@gmail.com";
+const ADMIN_EMAIL = "zentrixcoreitsolutionsltd@gmail.com";
 const LOGO_URL = "https://ktdateas.com/wp-content/uploads/2020/03/ktda-holdings-logo.png"; 
 
 const BRAND = {
@@ -1752,7 +1752,7 @@ function buildEmailHTML(data, titleText, welcomeMessage, isCustomer) {
                 <p style="margin:5px 0 15px 0; color:#ffffff; font-size:10px; text-transform:uppercase; letter-spacing:1px;">Managed by KTDA Holdings Ltd • Kericho, Kenya</p>
                 <p style="margin:0; color:#999; font-size:11px; line-height:1.4; max-width:400px;">
                   This is a system-generated VAT receipt for order <b>#\${data.orderID}</b>. For help, contact 
-                  <a href="mailto:cherojoen@gmail.com" style="color:#f7dc6f; font-weight:bold;">cherojoen@gmail.com</a>
+                  <a href="mailto:zentrixcoreitsolutionsltd@gmail.com" style="color:#f7dc6f; font-weight:bold;">zentrixcoreitsolutionsltd@gmail.com</a>
                 </p>
                 <div style="margin-top:15px; border-top:1px solid #eee; padding-top:15px;">
                   <p style="margin:0; color:#ccc; font-size:9px;">© \${new Date().getFullYear()} Kebirigo Tea Factory. All Rights Reserved.</p>
@@ -1936,7 +1936,7 @@ function reportYearly() { generateExecutiveReport(365, "Yearly Review"); }
     function renderGoogleSheetsTab(container) {
       const savedGasUrl = localStorage.getItem('kebirigo_gas_script_url') || "https://script.google.com/macros/s/AKfycbxOrBeq1nEoWz-oeoSwV9SVbJ58_PCOafpYDGibxL5g3VR2POXMLAGj4Afvb4-aqQMp/exec";
       const savedSecretToken = localStorage.getItem('kebirigo_gas_secret_token') || "KEBIRIGO-TEA-2025-PRIVATE";
-      const savedAdminEmail = localStorage.getItem('kebirigo_admin_email') || "cherojoen@gmail.com";
+      const savedAdminEmail = localStorage.getItem('kebirigo_admin_email') || "zentrixcoreitsolutionsltd@gmail.com";
 
       container.innerHTML = `
         <div class="page-header">
@@ -2079,7 +2079,7 @@ function reportYearly() { generateExecutiveReport(365, "Yearly Review"); }
     async function testSystemFlowSuccessInApp() {
       const url = localStorage.getItem('kebirigo_gas_script_url') || "https://script.google.com/macros/s/AKfycbxOrBeq1nEoWz-oeoSwV9SVbJ58_PCOafpYDGibxL5g3VR2POXMLAGj4Afvb4-aqQMp/exec";
       const token = localStorage.getItem('kebirigo_gas_secret_token') || "KEBIRIGO-TEA-2025-PRIVATE";
-      const email = localStorage.getItem('kebirigo_admin_email') || "cherojoen@gmail.com";
+      const email = localStorage.getItem('kebirigo_admin_email') || "zentrixcoreitsolutionsltd@gmail.com";
 
       const mock = {
         token: token,
